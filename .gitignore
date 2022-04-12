@@ -1,0 +1,19 @@
+*.iml
+/build
+/captures
+/certificates
+.externalNativeBuild
+.DS_Store
+.cxx
+
+# Android Studio
+/.idea
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+# Gradle
+.gradle
