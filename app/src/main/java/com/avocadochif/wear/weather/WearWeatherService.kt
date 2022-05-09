@@ -1,6 +1,7 @@
 package com.avocadochif.wear.weather
 
 import android.graphics.Color
+import android.text.format.DateUtils
 import androidx.wear.tiles.ColorBuilders.ColorProp
 import androidx.wear.tiles.DimensionBuilders.expand
 import androidx.wear.tiles.LayoutElementBuilders.*
@@ -70,7 +71,7 @@ class WearWeatherService : TileService() {
 
     companion object {
         private const val RESOURCES_VERSION = "1"
-        private const val FRESHNESS_INTERVAL = 15 * 60 * 1000L //15m
+        private const val FRESHNESS_INTERVAL = 15 * DateUtils.MINUTE_IN_MILLIS
     }
 
 }
