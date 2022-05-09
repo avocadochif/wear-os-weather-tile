@@ -6,6 +6,11 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 
+/**---------------Load certificates properties---------------**/
+def propertiesFile = rootProject.file("app/certificates/certificates.properties")
+def properties = new Properties()
+properties.load(new FileInputStream(propertiesFile))
+
 android {
     compileSdk 32
 
@@ -21,6 +26,9 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "APP_ID", properties['appID']
+            buildConfigField "String", "BASE_URL", properties['baseURL']
         }
     }
 
@@ -41,6 +49,7 @@ dependencies {
     implementation 'androidx.wear:wear:1.2.0'
     implementation 'androidx.wear.tiles:tiles:1.0.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0'
+    implementation 'androidx.security:security-crypto:1.0.0'
     debugImplementation 'androidx.wear.tiles:tiles-renderer:1.0.1'
 
     //Networking
