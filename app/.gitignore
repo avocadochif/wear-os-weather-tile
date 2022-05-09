@@ -1,6 +1,6 @@
 /build
 /captures
-/certificates
+/certificates/certificates.properties
 .externalNativeBuild
 .DS_Store
 
