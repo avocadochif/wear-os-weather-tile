@@ -22,9 +22,4 @@ object NetworkingGeneralConst {
 
     //////////////////////////////// Queries //////////////////////////////////
 
-    const val latitude = "{latitude}" //49.842957
-    const val longitude = "{longitude}" //24.031111
-    const val listOfForecastForExcluding = "{listOfForecastForExcluding}" //minutely,hourly,alerts
-    const val appID = "{appID}"
-
 }
