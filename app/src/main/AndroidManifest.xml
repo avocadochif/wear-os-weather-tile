@@ -3,6 +3,7 @@
     package="com.avocadochif.wear.weather">
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
