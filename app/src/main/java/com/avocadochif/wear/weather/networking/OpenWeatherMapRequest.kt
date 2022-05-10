@@ -16,9 +16,9 @@ interface OpenWeatherMapRequest {
 
         @POST(ONE_CALL_WEATHER)
         suspend fun getOneCallWeather(
-            @Query("lat") latitude: Double, //49.842957
-            @Query("lon") longitude: Double, //24.031111
-            @Query("exclude") exclude: String, //minutely,hourly,alerts
+            @Query("lat") latitude: Double,
+            @Query("lon") longitude: Double,
+            @Query("exclude") exclude: String,
             @Query("appid") appID: String
         ): Response<OneCallWeatherResponse>
 

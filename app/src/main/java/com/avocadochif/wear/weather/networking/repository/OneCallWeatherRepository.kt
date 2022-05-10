@@ -9,7 +9,12 @@ class OneCallWeatherRepository(
 ) {
 
     suspend fun getOneCallWeather() = safeApiCall {
-        service.getOneCallWeather().baseResponseHandler()
+        service.getOneCallWeather(
+            latitude = 49.842957,
+            longitude = 24.031111,
+            exclude = "minutely,hourly,alerts",
+            appID = "BuildConfig.APP_ID"
+        ).baseResponseHandler()
     }
 
 }
