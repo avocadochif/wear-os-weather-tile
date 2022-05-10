@@ -26,12 +26,20 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            buildConfigField("String", "APP_ID", properties["appID"].toString())
+            buildConfigField("String", "BASE_URL", properties["baseURL"].toString())
+        }
+
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
-            buildConfigField("String", "APP_ID", "${properties["appID"]}")
-            buildConfigField("String", "BASE_URL", "${properties["baseURL"]}")
+            buildConfigField("String", "APP_ID", properties["appID"].toString())
+            buildConfigField("String", "BASE_URL", properties["baseURL"].toString())
         }
     }
 
