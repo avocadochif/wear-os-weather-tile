@@ -10,9 +10,9 @@ plugins {
 }
 
 /**---------------Load certificates properties---------------**/
-val propertiesFile = rootProject.file("app/certificates/certificates.properties")
-val properties = Properties()
-properties.load(FileInputStream(propertiesFile))
+val properties = Properties().apply {
+    load(FileInputStream(file("app/certificates/certificates.properties")))
+}
 
 android {
     compileSdk = 32
