@@ -11,7 +11,7 @@ plugins {
 
 /**---------------Load certificates properties---------------**/
 val properties = Properties().apply {
-    load(FileInputStream(file("app/certificates/certificates.properties")))
+    load(FileInputStream(file("certificates/certificates.properties")))
 }
 
 android {
