@@ -9,6 +9,7 @@ class OneCallWeatherRepository(
     private val service: OpenWeatherMapRequest.OneCallAPI
 ) {
 
+    //TODO: hardcoded, change later
     suspend fun getOneCallWeather() = safeApiCall {
         service.getOneCallWeather(
             latitude = 49.842957,

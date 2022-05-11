@@ -19,6 +19,9 @@ data class OneCallWeatherResponse(
     var current: CurrentWeather? = null,
 
     @SerializedName("daily")
-    var daily: List<DailyWeather> = mutableListOf()
+    var daily: List<DailyWeather> = mutableListOf(),
+
+    @Transient
+    var location: String = "Lviv" //TODO: hardcoded, change later
 
 ) : Parcelable

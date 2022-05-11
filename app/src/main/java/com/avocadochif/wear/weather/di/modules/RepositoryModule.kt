@@ -5,15 +5,15 @@ import com.avocadochif.wear.weather.networking.repository.OneCallWeatherReposito
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.android.components.ServiceComponent
+import dagger.hilt.android.scopes.ServiceScoped
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(ServiceComponent::class)
 object RepositoryModule {
 
     @Provides
-    @ViewModelScoped
+    @ServiceScoped
     fun provideOneCallWeatherRepository(service: OpenWeatherMapRequest.OneCallAPI): OneCallWeatherRepository {
         return OneCallWeatherRepository(service)
     }
