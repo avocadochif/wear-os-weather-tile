@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.wear:wear:1.2.0")
     implementation("androidx.wear.tiles:tiles:1.0.1")
+    implementation("androidx.wear.tiles:tiles-material:1.1.0-alpha05")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0")
     implementation("androidx.security:security-crypto:1.0.0")
     debugImplementation("androidx.wear.tiles:tiles-renderer:1.0.1")
