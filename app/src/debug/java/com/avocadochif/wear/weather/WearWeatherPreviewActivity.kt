@@ -16,7 +16,7 @@ class WearWeatherPreviewActivity : ComponentActivity() {
 
         tileUiClient = TileUiClient(
             context = this,
-            component = ComponentName(this, WearWeatherService::class.java),
+            component = ComponentName(this, CurrentWeatherTileService::class.java),
             parentView = findViewById<FrameLayout>(R.id.root)
         ).also {
             it.connect()

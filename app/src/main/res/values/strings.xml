@@ -2,4 +2,9 @@
     <string name="app_name">wear-tile-weather-sample</string>
     <string name="tile_label">WearWeather</string>
     <string name="tile_description">Wear Weather Tile Example</string>
+
+    <!-- EmptyStateLayout -->
+    <string name="empty_state_refresh">Refresh</string>
+    <string name="empty_state_refresh_content_description">refresh weather</string>
+
 </resources>
