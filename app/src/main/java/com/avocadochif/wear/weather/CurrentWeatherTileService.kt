@@ -3,24 +3,24 @@ package com.avocadochif.wear.weather
 import android.text.format.DateUtils
 import android.util.Log
 import androidx.wear.tiles.*
-import androidx.wear.tiles.LayoutElementBuilders.*
+import androidx.wear.tiles.LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER
+import androidx.wear.tiles.LayoutElementBuilders.Layout
 import androidx.wear.tiles.ResourceBuilders.Resources
 import androidx.wear.tiles.TileBuilders.Tile
 import androidx.wear.tiles.TimelineBuilders.Timeline
 import androidx.wear.tiles.TimelineBuilders.TimelineEntry
-import com.avocadochif.wear.weather.components.Chip
-import com.avocadochif.wear.weather.components.ExpandColumn
-import com.avocadochif.wear.weather.components.ExpandRow
-import com.avocadochif.wear.weather.components.Text
+import com.avocadochif.wear.weather.components.*
 import com.avocadochif.wear.weather.datasource.sharedpreferences.CorePreferences
 import com.avocadochif.wear.weather.extensions.getScreenDensity
 import com.avocadochif.wear.weather.extensions.getScreenHeightDp
 import com.avocadochif.wear.weather.extensions.getScreenShapeType
 import com.avocadochif.wear.weather.extensions.getScreenWidthDp
+import com.avocadochif.wear.weather.networking.Result
 import com.avocadochif.wear.weather.networking.repository.OneCallWeatherRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.guava.future
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,9 +35,22 @@ class CurrentWeatherTileService : TileService() {
     @Inject
     lateinit var repository: OneCallWeatherRepository
 
+    private val isWeatherDataValid: Boolean by lazy {
+        (System.currentTimeMillis() - preferences.oneCallWeatherLastUpdateAt) <= FRESHNESS_DATA_VALID_INTERVAL
+    }
+
     override fun onTileRequest(requestParams: RequestBuilders.TileRequest) = serviceScope.future {
-        if (requestParams.state?.lastClickableId == "id_refresh") {
-            Log.e("TAG", "refresh clicked")
+        when (requestParams.state?.lastClickableId) {
+            "id_refresh" -> serviceScope.launch {
+                when (val result = repository.getOneCallWeather()) {
+                    is Result.Success -> result.data?.let {
+                        preferences.oneCallWeatherResponse = it
+                        preferences.oneCallWeatherLastUpdateAt = System.currentTimeMillis()
+                    }
+                    is Result.Error -> Log.e("TAG", "${result.apiError.errorType}")
+                }
+            }
+            else -> {}
         }
 
         Tile.Builder()
@@ -48,16 +61,65 @@ class CurrentWeatherTileService : TileService() {
                     .addTimelineEntry(
                         TimelineEntry.Builder()
                             .setLayout(
-                                when (preferences.oneCallWeatherLastUpdateAt != 0L) {
-                                    true -> getEmptyStateLayout()
-                                    false -> getLoadedStateLayout()
+                                when (isWeatherDataValid) {
+                                    true -> getValidDataStateLayout()
+                                    false -> getInvalidDataStateLayout()
                                 }
                             ).build()
                     ).build()
             ).build()
     }
 
-    private fun getEmptyStateLayout(): Layout {
+    private fun getValidDataStateLayout(): Layout {
+        val location = preferences.oneCallWeatherResponse?.location ?: "Lviv"
+        val temp = preferences.oneCallWeatherResponse?.current?.temp ?: 0
+        val weather = preferences.oneCallWeatherResponse?.current?.weather?.firstOrNull()?.main ?: "Rain"
+
+        return Layout.Builder()
+            .setRoot(
+                CenteredBox(
+                    context = this,
+                    paddingResId = R.dimen.padding_8dp,
+                    content = Column(HORIZONTAL_ALIGN_CENTER)
+                        .addContent(
+                            Text(
+                                context = this,
+                                text = location,
+                                textColorResId = R.color.violet_1
+                            )
+                        )
+                        .addContent(
+                            Spacer(
+                                context = this,
+                                widthResId = null,
+                                heightResId = R.dimen.spacer_4dp
+                            )
+                        )
+                        .addContent(
+                            Text(
+                                context = this,
+                                text = temp.toString(),
+                                textColorResId = R.color.white_1
+                            )
+                        ).addContent(
+                            Spacer(
+                                context = this,
+                                widthResId = null,
+                                heightResId = R.dimen.spacer_4dp
+                            )
+                        )
+                        .addContent(
+                            Text(
+                                context = this,
+                                text = weather,
+                                textColorResId = R.color.violet_1
+                            )
+                        ).build()
+                ).build()
+            ).build()
+    }
+
+    private fun getInvalidDataStateLayout(): Layout {
         return Layout.Builder()
             .setRoot(
                 Chip(
@@ -80,32 +142,6 @@ class CurrentWeatherTileService : TileService() {
             ).build()
     }
 
-    private fun getLoadedStateLayout(): Layout {
-        val location = preferences.oneCallWeatherResponse?.location ?: "Lviv"
-        val weather = preferences.oneCallWeatherResponse?.current?.weather?.firstOrNull()?.main ?: "Rain"
-
-        return Layout.Builder()
-            .setRoot(
-                ExpandColumn(HORIZONTAL_ALIGN_CENTER)
-                    .addContent(
-                        Text(
-                            context = this,
-                            text = location,
-                            textColorResId = R.color.violet_1
-                        )
-                    )
-                    .addContent(
-                        ExpandRow(VERTICAL_ALIGN_CENTER).build()
-                    ).addContent(
-                        Text(
-                            context = this,
-                            text = weather,
-                            textColorResId = R.color.violet_1
-                        )
-                    ).build()
-            ).build()
-    }
-
     override fun onResourcesRequest(requestParams: RequestBuilders.ResourcesRequest) = serviceScope.future {
         Resources.Builder()
             .setVersion(RESOURCES_VERSION)
@@ -115,6 +151,7 @@ class CurrentWeatherTileService : TileService() {
     companion object {
         private const val RESOURCES_VERSION = "1"
         private const val FRESHNESS_INTERVAL = 15 * DateUtils.MINUTE_IN_MILLIS
+        private const val FRESHNESS_DATA_VALID_INTERVAL = 60 * DateUtils.MINUTE_IN_MILLIS
     }
 
 }

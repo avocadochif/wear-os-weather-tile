@@ -2,15 +2,14 @@ package com.avocadochif.wear.weather.components
 
 import android.content.Context
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.wear.tiles.ColorBuilders
-import androidx.wear.tiles.DeviceParametersBuilders
+import androidx.wear.tiles.*
 import androidx.wear.tiles.DimensionBuilders.expand
 import androidx.wear.tiles.DimensionBuilders.wrap
-import androidx.wear.tiles.LayoutElementBuilders
 import androidx.wear.tiles.LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER
-import androidx.wear.tiles.ModifiersBuilders
+import androidx.wear.tiles.LayoutElementBuilders.VERTICAL_ALIGN_CENTER
 import androidx.wear.tiles.material.Chip
 import androidx.wear.tiles.material.ChipColors
 
@@ -47,16 +46,41 @@ fun Text(
             ).build()
     ).build()
 
-fun ExpandColumn(
+fun Spacer(
+    context: Context,
+    @DimenRes widthResId: Int? = null,
+    @DimenRes heightResId: Int? = null
+) = LayoutElementBuilders.Spacer.Builder()
+    .setWidth(DimensionBuilders.dp(widthResId?.let { context.resources.getDimension(it) } ?: run { 0f }))
+    .setHeight(DimensionBuilders.dp(heightResId?.let { context.resources.getDimension(it) } ?: run { 0f }))
+    .build()
+
+fun Column(
     @LayoutElementBuilders.HorizontalAlignment horizontalAlignment: Int
 ) = LayoutElementBuilders.Column.Builder()
-    .setWidth(expand())
-    .setHeight(expand())
     .setHorizontalAlignment(horizontalAlignment)
 
-fun ExpandRow(
+fun Row(
     @LayoutElementBuilders.VerticalAlignment verticalAlignment: Int
 ) = LayoutElementBuilders.Row.Builder()
+    .setVerticalAlignment(verticalAlignment)
+
+fun CenteredBox(
+    context: Context,
+    @DimenRes paddingResId: Int? = null,
+    content: LayoutElementBuilders.LayoutElement
+) = LayoutElementBuilders.Box.Builder()
     .setWidth(expand())
     .setHeight(expand())
-    .setVerticalAlignment(verticalAlignment)
+    .setModifiers(
+        ModifiersBuilders.Modifiers.Builder()
+            .setPadding(
+                ModifiersBuilders.Padding.Builder()
+                    .setAll(
+                        DimensionBuilders.dp(paddingResId?.let { context.resources.getDimension(it) } ?: run { 8f })
+                    ).build()
+            ).build()
+    )
+    .setHorizontalAlignment(HORIZONTAL_ALIGN_CENTER)
+    .setVerticalAlignment(VERTICAL_ALIGN_CENTER)
+    .addContent(content)
