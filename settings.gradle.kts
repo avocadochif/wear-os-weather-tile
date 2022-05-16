@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "wear-tile-weather-sample"
+rootProject.name = "wear-weather"
 include(":app")
